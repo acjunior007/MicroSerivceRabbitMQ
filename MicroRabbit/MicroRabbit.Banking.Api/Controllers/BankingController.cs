@@ -1,4 +1,5 @@
 ﻿using MicroRabbit.Banking.Application.Interfaces;
+using MicroRabbit.Banking.Application.Models;
 using MicroRabbit.Banking.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,11 +14,6 @@ namespace MicroRabbit.Banking.Api.Controllers
     [Route("api/[controller]")]
     public class BankingController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
         private readonly ILogger<BankingController> _logger;
         private readonly IAccountService _accountService;
 
@@ -39,6 +35,20 @@ namespace MicroRabbit.Banking.Api.Controllers
             catch (Exception ex)
             {
                 return (BadRequest(ex.Message));
+            }
+        }
+
+        [HttpPost]
+        public IActionResult Post([FromBody] AccountTransfer accountTransfer)
+        {
+            try
+            {
+                _accountService.Transfer(accountTransfer);
+                return Ok(accountTransfer);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
             }
         }
     }
